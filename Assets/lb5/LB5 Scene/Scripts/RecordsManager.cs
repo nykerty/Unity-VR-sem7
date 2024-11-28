@@ -27,16 +27,24 @@ public class RecordsManager : MonoBehaviour
     public GameObject NameInputPanel; // Панель с текстовым полем для ввода имени
     public GameObject GenerateNameBtn;
 
-    private string recordsPath = "Assets/Records.json"; // Путь к файлу с записями
+    //private string recordsPath; // Путь к файлу с записями //
     private RecordData recordData; // Данные из файла с записями
     private float newRecordTime = 0;
 
     public static RecordsManager instance;
 
-    void Start()
+    void Awake()
     {
         instance = this;
-        // Загрузка рекордов из файла
+
+        if (!Directory.Exists(Application.persistentDataPath + "/HighScores/"))
+        {
+            Directory.CreateDirectory(Application.persistentDataPath + "/HighScores/");
+        }
+    }
+
+    void Start()
+    {
         LoadRecords();
 
         // Вывод данных на экран
@@ -113,6 +121,7 @@ public class RecordsManager : MonoBehaviour
     // Метод для сохранения рекордов в файл
     private void SaveRecords()
     {
+        string recordsPath = Application.persistentDataPath + "/HighScores/Records.json";
         string jsonData = JsonUtility.ToJson(recordData);
         File.WriteAllText(recordsPath, jsonData);
     }
@@ -120,6 +129,8 @@ public class RecordsManager : MonoBehaviour
     // Метод для загрузки рекордов из файла
     private void LoadRecords()
     {
+        string recordsPath = Application.persistentDataPath + "/HighScores/Records.json";
+
         if (File.Exists(recordsPath))
         {
             string jsonData = File.ReadAllText(recordsPath);
